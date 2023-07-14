@@ -1,15 +1,15 @@
-from django.db import models
-from django.contrib.auth.models import User
-
+from django.db import models, Count, Max, Sum
+from django.contrib.auth.models import User, 
 
 # Create your models here.
 class Message(models.Model):
     user =          models.ForeignKey(User, on_delete=models.CASCADE)
     sender =        models.ForeignKey(User, on_delete=models.CASCADE, related_name='from_user')
-    receipient =    models.ForeignKey(User, on_delete=models.CASCADE, related_name='to_user')
+    recipient =     models.ForeignKey(User, on_delete=models.CASCADE, related_name='to_user')
     body =          models.TextField(null=True)
     date =          models.DateTimeField(auto_now_add=True)
     is_read =       models.BooleanField(default=False)
+    sent_at =   models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.user.username}'s message"
@@ -18,19 +18,32 @@ class Message(models.Model):
         sender_message = Message(
             user = from_user,
             sender = from_user,
-            receipient = to_user,
+            recipient = to_user,
             body = body,
             is_read = True
         )
         sender_message.save()
 
-        receipient_message = Message(
+        recipient_message = Message(
             user = from_user,
             sender = from_user,
             recepient = to_user,
             body = body,
             is_read = True
         )
-        receipient_message.save()
+        recipient_message.save()
 
         return sender_message
+    
+    def get_message(user):
+        # To get the latest meesage 
+        recipients = []
+        messages = Message.objects.filter(user=user).values('recipient').annotate(last=Max('date')).order_by('-last')
+        # messages2= Message.objects.filter(user=user).values('recipient').order_by('-sent_at')
+        for msg in messages:
+            recipients.append({
+                'user': User.objects.get(msg['recipient']),
+                'last': msg['last'],
+                'unread': Message.objects.get(user=user, recipient__pk=msg['recipient'], is_read=False).count()
+            })
+        return recipients
