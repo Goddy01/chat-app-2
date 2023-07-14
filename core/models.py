@@ -1,5 +1,6 @@
-from django.db import models, Count, Max, Sum
-from django.contrib.auth.models import User, 
+from django.db import models
+from django.db.models import Count, Max, Sum
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Message(models.Model):
@@ -9,7 +10,6 @@ class Message(models.Model):
     body =          models.TextField(null=True)
     date =          models.DateTimeField(auto_now_add=True)
     is_read =       models.BooleanField(default=False)
-    sent_at =   models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.user.username}'s message"
