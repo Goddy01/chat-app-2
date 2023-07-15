@@ -18,7 +18,13 @@ def home_chat(request):
         for msg in messages:
             if msg['user'].username == lastest_msg_username:
                 msg['unread'] = 0
-    return render(request, 'core/index.html')
+    context = {
+        'user': user,
+        'lastest_msg_username': lastest_msg_username,
+        'messages': messages,
+        'associated_msgs': associated_msgs
+    }
+    return render(request, 'core/index.html', context)
 
 
 @login_required
