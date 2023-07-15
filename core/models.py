@@ -42,9 +42,10 @@ class Message(models.Model):
         messages = Message.objects.filter(user=user).values('recipient').annotate(last=Max('date')).order_by('-last')
         # messages2= Message.objects.filter(user=user).values('recipient').order_by('-sent_at')
         for msg in messages:
+            username = User.objects.get(pk=msg['recipient']).username
             recipients.append({
-                'user': User.objects.get(msg['recipient']),
+                'user': User.objects.get(username=username),
                 'last': msg['last'],
-                'unread': Message.objects.get(user=user, recipient__pk=msg['recipient'], is_read=False).count()
+                'unread': Message.objects.filter(user=user, recipient__pk=msg['recipient'], is_read=False).count()
             })
         return recipients
