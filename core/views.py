@@ -1,10 +1,27 @@
 from django.shortcuts import render
 from .models import Message
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
-def home(request):
+@login_required
+def home_chat(request):
+    user = request.user
+    messages = Message.get_message(user=user)
+    lastest_msg_username = None
+    associated_msgs = None
+    if messages:
+        message = messages[0]
+        lastest_msg_username = message['user'].username
+        associated_msgs = Message.objects.filter(user=user, recipient__username=lastest_msg_username)
+        message.update(is_read=True)
+        
+        for msg in messages:
+            if msg['user'].username == lastest_msg_username:
+                msg['unread'] = 0
     return render(request, 'core/index.html')
 
+
+@login_required
 def direct_messages(request, username):
     """"""
     user = request.user
