@@ -36,8 +36,9 @@ class Message(models.Model):
         return sender_message
     
     def get_message(user):
-        # To get the latest meesage 
         recipients = []
+
+        # Retrieves all the messages sent by the user to other users while annotating 'last' and ordering the retrieved queryset by the most recent message (descending)
         messages = Message.objects.filter(user=user).values('recipient').annotate(last=Max('date')).order_by('-last')
         # messages2= Message.objects.filter(user=user).values('recipient').order_by('-sent_at')
         for msg in messages:
