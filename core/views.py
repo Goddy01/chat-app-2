@@ -13,6 +13,7 @@ def direct_messages(request, username):
        user=user,
        recipient__username= username,
     ) # Returns 'Message' instances that a sender has sent to a particular recipient
+    direct_messages.update(is_read=True)
     for r_msg in r_messages:
         if r_msg['recipient'] == username: # checks if the msg recipient equals to the recipient passed as an argument
             r_msg['unread'] = 0 # sets the unread messages count to 0
@@ -20,6 +21,7 @@ def direct_messages(request, username):
     context = {
         'r_messages': r_messages,
         'direct_messages': direct_messages,
-        'currnt_username': username
+        'currnt_username': username,
+        'user': user
     }
     return render(request, 'core/index.html', context)
