@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
 from django.conf import settings
+from django.db.models.signals import post_save
 
 # Create your models here.
 
@@ -34,3 +35,7 @@ class UserProfile(AbstractBaseUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'facebook', 'twitter', 'instagram']
+
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            UserProfile.objects.create(user=instance)
