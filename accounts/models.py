@@ -8,13 +8,13 @@ from django.conf import settings
 # Create your models here.
 
 def user_profile_img_upload_location(instance, filename):
-    return f'{instance.user.username}-{filename}'
+    return f'users_dps/user_{instance.user.username}-{instance.user.id}/{instance.user.username}-{filename}'
 class UserProfile(AbstractBaseUser):
     user =              models.OneToOneField(User, on_delete=models.CASCADE)
     full_name =         models.CharField(max_length=128)
     email =             models.EmailField(max_length=128, unique=True)
     bio =               models.TextField(null=False)
-    image =             models.ImageField(upload_to=user_profile_img_upload_location, default='default.jpg')
+    image =             models.ImageField(upload_to=user_profile_img_upload_location, default='default_profile_image.jpg')
     website =           models.URLField(default='https://website.com/')
     facebook =          models.URLField(default='https://facebook.com/')
     twitter =           models.URLField(default='https://twitter.com/')
