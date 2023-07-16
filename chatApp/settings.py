@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'accounts',
     'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -41,7 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     'core',
-    'accounts',
     'import_export',
 ]
 
@@ -86,6 +86,8 @@ DATABASES = {
     }
 }
 
+
+# AUTH_USER_MODEL = 'accounts.UserProfile'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
