@@ -41,7 +41,7 @@ class UserProfile(AbstractBaseUser):
             UserProfile.objects.create(user=instance)
 
     def save_user_profile(sender, instance, created, **kwargs):
-        instance.profile.save()
+        instance.userprofile.save()
 
-    post_save(create_user_profile, sender=User)
-    post_save(save_user_profile, sender=User)
+    post_save.connect(create_user_profile, sender=User)
+    post_save.connect(save_user_profile, sender=User)
