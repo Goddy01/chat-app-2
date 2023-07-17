@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from .models import Message
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.http import HttpResponse
 
 # Create your views here.
 @login_required
@@ -48,3 +50,19 @@ def direct_messages(request, username):
         'user': user
     }
     return render(request, 'core/index.html', context)
+
+@login_required
+def send_direct(request):
+    if request.method == 'POST':
+        from_user = request.user
+        to_user_username = request.POST.get('to_user')
+        body = request.POST.get('body')
+        to_user = User.objects.get(username=to_user_username)
+
+        Message.sender_message(
+            from_user=from_user,
+            to_user = to_user,
+            body = body
+        )
+        success = 'Message Sent!'
+        return HttpResponse(success)
